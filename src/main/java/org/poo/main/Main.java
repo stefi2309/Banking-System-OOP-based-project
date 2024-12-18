@@ -1,5 +1,6 @@
 package org.poo.main;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -79,17 +80,31 @@ public final class Main {
 
         ArrayNode output = objectMapper.createArrayNode();
 
+        if (inputData.getExchangeRates() != null) {
+            Exchange.loadRates(objectMapper.convertValue(inputData.getExchangeRates(), JsonNode.class));
+        }
+
         Bank bank = SingletonLazy.getInstance();
         bank.setUsers(List.of(inputData.getUsers()));
 
         // Process each command in inputData
         for (CommandInput command : inputData.getCommands()) {
+            ObjectNode result = null;
             switch (command.getCommand()) {
                 case "printUsers" -> output.add(CommandRunner.printUsers(command));
                 case "addAccount" -> CommandRunner.addAccount(command);
-                case "createCard" -> CommandRunner.createCard(command);
+                case "createCard", "createOneTimeCard" -> CommandRunner.createCard(command);
                 case "addFunds" -> CommandRunner.addFunds(command);
                 case "deleteAccount" -> output.add(CommandRunner.deleteAccount(command));
+                case "deleteCard" -> CommandRunner.deleteCard(command);
+                case "setMinimumBalance" -> CommandRunner.setMinBalance(command);
+                case "payOnline" -> {
+                    result = CommandRunner.payOnline(command);
+                    if (result != null && !result.isEmpty()) {
+                    output.add(result);
+                    }
+                }
+                case "sendMoney" -> CommandRunner.sendMoney(command);
                 default -> System.out.println("Invalid command " + command.getCommand());
             }
         }

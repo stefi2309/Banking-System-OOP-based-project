@@ -43,25 +43,18 @@ public class Bank {
         }
     }
 
-    public static void createCard(String email, String IBAN) {
+    public static void createCard(String email, String IBAN, CardType type) {
         User user = getUser(email);
         if (user == null) {
             throw new IllegalArgumentException("No user found with email: " + email);
         }
 
-        Account account = user.getAccounts().stream()
-                .filter(a -> a.getIBAN().equals(IBAN))
-                .findFirst()
-                .orElse(null);
+        Account account = user.getAccount(IBAN);
 
-        if (account == null) {
-            throw new IllegalArgumentException("No account found with IBAN: " + IBAN);
-        }
-
-        String cardNumber = Utils.generateCardNumber();
-        Card newCard = new Card(cardNumber, "active");
-        account.addCard(newCard);
+        Card card = CardFactory.createCard(Utils.generateCardNumber(), CardStatus.ACTIVE, type);
+        account.addCard(card);
     }
+
 
     public static void addFunds(String IBAN, double amount) {
         for (User user : users) {
@@ -94,6 +87,67 @@ public class Bank {
 
         user.getAccounts().remove(account);
         account.getCards().clear();
+    }
+
+    public static void deleteCard(String cardNumber) {
+        for (User user : users) {
+            for (Account account : user.getAccounts()) {
+                for (Card card : account.getCards()) {
+                    if (card.getCardNumber().equals(cardNumber)) {
+                        account.removeCard(cardNumber);
+                        return;
+                    }
+                }
+            }
+        }
+        throw new IllegalArgumentException("Card not found with card number: " + cardNumber);
+    }
+
+    public static void setMinimumBalance(String IBAN, double minBalance) {
+        for (User user : users) {
+            Account account = user.getAccounts().stream()
+                    .filter(a -> a.getIBAN().equals(IBAN))
+                    .findFirst()
+                    .orElse(null);
+            if (account != null) {
+                account.setMinBalance(minBalance);
+                return;
+            }
+        }
+        throw new IllegalArgumentException("Account not found with IBAN: " + IBAN);
+    }
+
+    private static Account findAccountByIBAN(String IBAN) {
+        for (User user : users) {
+            for (Account account : user.getAccounts()) {
+                if (account.getIBAN().equals(IBAN)) {
+                    return account;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static void transferFunds(String senderIBAN, String receiverIBAN, double amount, String description) throws IllegalArgumentException {
+        Account senderAccount = findAccountByIBAN(senderIBAN);
+        Account receiverAccount = findAccountByIBAN(receiverIBAN);
+
+        if (senderAccount == null) {
+            throw new IllegalArgumentException("Sender account not found");
+        }
+        if (receiverAccount == null) {
+            throw new IllegalArgumentException("Receiver account not found");
+        }
+
+        if (senderAccount.getCurrency().equals(receiverAccount.getCurrency())) {
+            senderAccount.payment(amount);
+            receiverAccount.deposit(amount);
+        } else {
+            double convertedAmount = Exchange.convert(senderAccount.getCurrency(), receiverAccount.getCurrency(), amount);
+            //double convertedAmount = Exchange.convert(receiverAccount.getCurrency(), senderAccount.getCurrency(), amount);
+            senderAccount.payment(amount);
+            receiverAccount.deposit(convertedAmount);
+        }
     }
 
     public static void reset() {

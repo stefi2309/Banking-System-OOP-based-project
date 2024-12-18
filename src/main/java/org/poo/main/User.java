@@ -35,5 +35,13 @@ public class User {
         }
         return null;
     }
+    public Account getAccountByCardNumber(String cardNumber) {
+        for (Account account : accounts) {
+            if (account.getCards().stream().anyMatch(card -> card.getCardNumber().equals(cardNumber))) {
+                return account;
+            }
+        }
+        return null;
+    }
 
 }
