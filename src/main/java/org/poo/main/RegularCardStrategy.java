@@ -1,8 +1,8 @@
 package org.poo.main;
 
-public class RegularCardStrategy implements CardTransactionStrategy {
+public final class RegularCardStrategy implements CardTransactionStrategy {
     @Override
-    public TransactionResult processTransaction(double amount) {
+    public TransactionResult processTransaction(final double amount) {
         return new TransactionResult(amount > 0, false);
     }
 }

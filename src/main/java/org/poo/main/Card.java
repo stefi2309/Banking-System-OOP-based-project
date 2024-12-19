@@ -10,21 +10,27 @@ public class Card {
     private CardStatus status;
     private CardTransactionStrategy transactionStrategy;
 
-    public Card(String cardNumber, CardStatus status) {
+    public Card(final String cardNumber, final CardStatus status) {
         this.cardNumber = cardNumber;
         this.status = status;
     }
 
-    public Card(String cardNumber, CardStatus status, CardTransactionStrategy strategy) {
+    public Card(final String cardNumber, final CardStatus status,
+                final CardTransactionStrategy strategy) {
         this.cardNumber = cardNumber;
         this.status = status;
         this.transactionStrategy = strategy;
     }
 
-    public TransactionResult performTransaction(double amount) {
+    /**
+     * Performs a transaction on the card
+     * Validates the transaction using the card's transaction strategy
+     * @param amount The amount to be transacted
+     * @return A TransactionResult
+     */
+    public TransactionResult performTransaction(final double amount) {
         if (this.status != CardStatus.ACTIVE) {
             return new TransactionResult(false, false);
-            // Inactive or frozen cards cannot process transactions.
         }
         return transactionStrategy.processTransaction(amount);
     }

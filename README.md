@@ -1,45 +1,63 @@
+# IVANA STEFANIA 332CD
 # Project Assignment POO  - J. POO Morgan - Phase One
 
-![](https://s.yimg.com/ny/api/res/1.2/aN0SfZTtLF5hLNO0wIN3gg--/YXBwaWQ9aGlnaGxhbmRlcjt3PTcwNTtoPTQyNztjZj13ZWJw/https://o.aolcdn.com/hss/storage/midas/b23d8b7f62a50a7b79152996890aa052/204855412/fit.gif)
+## Implementarea Sistemului Bancar
+Acest proiect Java implementeaza un sistem bancar simplificat unde utilizatorii pot crea conturi, efectua transferuri, seta aliasuri pentru conturi, si multe altele. 
+Sistemul gestioneaza interactiunile intre utilizatori, conturi, si tranzactiile efectuate prin intermediul unei serii de clase si metode.
 
-#### Assignment Link: [https://ocw.cs.pub.ro/courses/poo-ca-cd/teme/2024/proiect-e1](https://ocw.cs.pub.ro/courses/poo-ca-cd/teme/2024/proiect-e1)
+## Componente Cheie
 
-## Skel Structure
+### User si Account
+- User: Reprezinta un utilizator in sistem, gestionand detaliile acestuia si conturile asociate.
+- Account: Gestioneaza detalii ale contului cum ar fi balanta, moneda si tranzactiile asociate.
 
-* src/
-    * checker/ - checker files
-    * fileio/ - contains classes used to read data from the json files
-    * main/
-        * Main - the Main class runs the checker on your implementation. Add the entry point to your implementation in it. Run Main to test your implementation from the IDE or from command line.
-        * Test - run the main method from Test class with the name of the input file from the command line and the result will be written
-          to the out.txt file. Thus, you can compare this result with ref.
-* input/ - contains the tests in JSON format
-* ref/ - contains all reference output for the tests in JSON format
+### Bank
+- Bank: Clasa principala care gestioneaza toti utilizatorii si interactiunile intre conturile acestora.
 
-## Tests
+### Card si Strategii de Tranzactie
+- Card: Baza pentru cardurile bancare, gestionand numarul cardului si starea acestuia.
+- CardTransactionStrategy: Interfata pentru strategiile de tranzactie, cu implementari specifice pentru diferite tipuri de carduri.
 
-Tests Basic 1 - 8: Infrastructure \
-Tests Functional 9 - 17: Advanced \
-Tests Flow 18 - 20: Large Input
+### Mecanici de Sistem
+- Singleton Pattern: Utilizat pentru a asigura ca exista o singura instanta a clasei Bank.
+- Factory Pattern: Utilizat in CardFactory pentru a crea carduri de diferite tipuri.
+- Exchange Rate Management: Gestionarea ratelor de schimb valutar si conversia sumelor intre diferite monede.
 
-1. test01_create - 2p
-2. test02_delete - 2p
-3. test03_one_time_card - 2p
-4. test04_funds - 2p
-5. test05_money_flow - 2p
-6. test06_non_existing - 2p
-7. test07_send_money_part1 - 3p
-8. test08_send_money_part2 - 3p
-9. test09_print_transactions - 3p
-10. test10_errors - 3p
-11. test11_card_status - 5p
-12. test12_continuous_payments - 5p
-13. test13_savings_account - 5p
-14. test14_split_payments - 5p
-15. test15_every_payment - 5p
-16. test16_report - 5p
-17. test17_spendings_report - 5p
-18. test18_large_input_1 - 7p
-19. test19_large_input_2 - 7p
-20. test19_large_input_3 - 7p
+## Caracteristici
+- Gestionarea Conturilor si Utilizatorilor: Permite crearea si administrarea conturilor si utilizatorilor.
+- Tranzactii si Transferuri: Implementeaza logica necesara pentru efectuarea platilor si transferurilor intre conturi, inclusiv conversia valutara.
+- Gestionarea Cardurilor: Permite crearea si administrarea cardurilor, oferind suport pentru carduri de unica folosinta si carduri regulate.
 
+## Descrierea Claselor
+
+### User 
+- Descriere: Gestioneaza informatiile despre un utilizator si conturile sale.
+- Proprietati: Nume, email, lista de conturi.
+- Metode: Metode pentru adaugarea de conturi si obtinerea informatiilor despre conturi si carduri.
+
+### Account
+- Descriere: Reprezinta un cont bancar, gestionand balanta, moneda, si alte detalii relevante.
+- Proprietati: IBAN, balanta, moneda, tipul contului.
+- Metode: Metode pentru depuneri, plati si gestionarea cardurilor asociate.
+
+### Bank
+- Descriere: Clasa centrala care coordoneaza toate activitatile sistemului bancar.
+- Proprietati: Lista de utilizatori.
+- Metode: Metode pentru gestionarea utilizatorilor, conturilor si efectuarea de transferuri si alte operatiuni bancare.
+
+### Card
+- Descriere: Baza pentru gestionarea cardurilor bancare.
+- Proprietati: Numarul cardului, statusul.
+- Metode: Metoda pentru efectuarea tranzactiilor conform strategiei asociate cardului.
+
+### CardFactory
+- Descriere: Fabrica pentru crearea de carduri, folosind diferite strategii bazate pe tipul cardului.
+- Metode: Metoda statica pentru crearea cardurilor.
+
+### Exchange
+- Descriere: Gestionarea si conversia valutara intre diverse monede.
+- Metode: Metode pentru adaugarea ratelor de schimb si conversia sumelor intre monede.
+
+### TransactionResult
+- Descriere: Encapsuleaza rezultatul unei tranzactii efectuate cu un card.
+- Proprietati: Succesul tranzactiei, daca cardul trebuie inlocuit.

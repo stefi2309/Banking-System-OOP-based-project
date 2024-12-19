@@ -1,7 +1,14 @@
 package org.poo.main;
 
 public class CardFactory {
-    public static Card createCard(String cardNumber, CardStatus status, CardType type) {
+    /**
+     * @param cardNumber
+     * @param status
+     * @param type
+     * @return A new Card instance
+     */
+    public static Card createCard(final String cardNumber, final CardStatus status,
+                                  final CardType type) {
         CardTransactionStrategy strategy = switch (type) {
             case REGULAR -> new RegularCardStrategy();
             case ONE_TIME -> new OneTimeUseCardStrategy();

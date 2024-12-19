@@ -81,11 +81,12 @@ public final class Main {
         ArrayNode output = objectMapper.createArrayNode();
 
         if (inputData.getExchangeRates() != null) {
-            Exchange.loadRates(objectMapper.convertValue(inputData.getExchangeRates(), JsonNode.class));
+            Exchange.loadRates(objectMapper.convertValue(inputData.getExchangeRates(),
+                    JsonNode.class));
         }
 
         Bank bank = SingletonLazy.getInstance();
-        bank.setUsers(List.of(inputData.getUsers()));
+        Bank.setUsers(List.of(inputData.getUsers()));
 
         // Process each command in inputData
         for (CommandInput command : inputData.getCommands()) {
@@ -105,6 +106,7 @@ public final class Main {
                     }
                 }
                 case "sendMoney" -> CommandRunner.sendMoney(command);
+                case "setAlias" -> CommandRunner.setAlias(command);
                 default -> System.out.println("Invalid command " + command.getCommand());
             }
         }
@@ -130,7 +132,7 @@ public final class Main {
 
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
         objectWriter.writeValue(new File(filePath2), output);
-        bank.reset();
+        Bank.reset();
         Utils.resetRandom();
     }
 
